@@ -1,0 +1,20 @@
+{
+  "tables": [
+    {
+      "table_name": "ProductCatalog",
+      "file": "data/ProductCatalog.json"
+    },
+    {
+      "table_name": "Forum",
+      "file": "data/Forum.json"
+    },
+    {
+      "table_name": "Thread",
+      "file": "data/Thread.json"
+    },
+    {
+      "table_name": "Reply",
+      "file": "data/Reply.json"
+    }
+  ]
+}

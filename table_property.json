@@ -1,0 +1,68 @@
+{
+  "tables": [
+    {
+      "table_name": "ProductCatalog",
+      "kwargs": {
+        "KeySchema": [
+          { "AttributeName": "Id", "KeyType": "HASH" }
+        ],
+        "AttributeDefinitions": [
+          { "AttributeName": "Id", "AttributeType": "N" }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        }
+      }
+    },
+    {
+      "table_name": "Forum",
+      "kwargs": {
+        "KeySchema": [
+          { "AttributeName": "Name", "KeyType": "HASH" }
+        ],
+        "AttributeDefinitions": [
+          { "AttributeName": "Name", "AttributeType": "S" }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        }
+      }
+    },
+    {
+      "table_name": "Thread",
+      "kwargs": {
+        "KeySchema": [
+          { "AttributeName": "ForumName", "KeyType": "HASH" },
+          { "AttributeName": "Subject", "KeyType": "RANGE" }
+        ],
+        "AttributeDefinitions": [
+          { "AttributeName": "ForumName", "AttributeType": "S" },
+          { "AttributeName": "Subject", "AttributeType": "S" }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        }
+      }
+    },
+    {
+      "table_name": "Reply",
+      "kwargs": {
+        "KeySchema": [
+          { "AttributeName": "Id", "KeyType": "HASH" },
+          { "AttributeName": "ReplyDateTime", "KeyType": "RANGE" }
+        ],
+        "AttributeDefinitions": [
+          { "AttributeName": "Id", "AttributeType": "S" },
+          { "AttributeName": "ReplyDateTime", "AttributeType": "S" }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        }
+      }
+    }
+  ]
+}
