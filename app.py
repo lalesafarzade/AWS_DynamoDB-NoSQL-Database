@@ -1,5 +1,6 @@
 from main import  DynamoDBManager
 import argparse
+import json
 
 def main():
     parser = argparse.ArgumentParser(description="dynamo")
@@ -27,6 +28,13 @@ def main():
     load_batch= subparsers.add_parser("load-batch")
     load_batch.add_argument("config_file")
 
+    scan_table= subparsers.add_parser("scan-table")
+    scan_table.add_argument("table_name")
+
+    get_item= subparsers.add_parser("get-item")
+    get_item.add_argument("table_name")
+    get_item.add_argument("key")
+
 
     args = parser.parse_args()
     dynamo_manager = DynamoDBManager()
@@ -45,6 +53,13 @@ def main():
 
     elif args.dynamo_command == "load-batch":
         dynamo_manager.batch_write_item_db(args.config_file)
+
+    elif args.dynamo_command == "scan-table":
+        dynamo_manager.scan_table(args.table_name)
+
+    elif args.dynamo_command == "get-item":
+        key_dict = json.loads(args.key)
+        dynamo_manager.get_item_db(args.table_name,key_dict)
 
 
 if __name__ == "__main__":

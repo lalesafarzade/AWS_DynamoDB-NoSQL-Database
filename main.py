@@ -2,6 +2,7 @@ import decimal
 import json
 import logging
 from typing import Any, Dict, List
+from boto3.dynamodb.types import TypeDeserializer
 
 import boto3
 from botocore.exceptions import ClientError
@@ -102,7 +103,7 @@ class DynamoDBManager:
                    
                 
                     self.dynamodb.batch_write_item(RequestItems=items)
-                    #print(f"{items} in {table_name}")
+                    print(f"{items} in {table_name}")
 
 
 
@@ -113,6 +114,57 @@ class DynamoDBManager:
        # except ClientError as e:
         #    print("AWS Error:", e)
        # except Exception as e:
-         #   print("Error:", e)     
+         #   print("Error:", e)  
+         # 
+         # 
+    
+
+
+    def scan_table(self, table_name):
+        deserializer = TypeDeserializer()
+        items = []
+        last_evaluated_key = None
+
+        while True:
+            if last_evaluated_key:
+                response = self.dynamodb.scan(
+                    TableName=table_name,
+                    ExclusiveStartKey=last_evaluated_key
+                )
+            else:
+                response = self.dynamodb.scan(TableName=table_name)
+
+            batch = response.get("Items", [])
+
+            for item in batch:
+                items.append({
+                    k: deserializer.deserialize(v)
+                    for k, v in item.items()
+                })
+
+            last_evaluated_key = response.get("LastEvaluatedKey")
+
+            if not last_evaluated_key:
+                break
+        print(f'{items}')
+        return items
+    
+
+    def get_item_db(self,table_name, key: Dict[str, Any], **kwargs):
+    
+
+        try:
+            ### START CODE HERE ### (~ 1 line of code)
+            response = self.dynamodb.get_item(TableName=table_name, Key=key, **kwargs)
+            ### END CODE HERE ###
+            
+        except ClientError as e:
+            error = e.response.get("Error", {})
+            logging.error(
+                f"Failed to query DynamoDB. Error: {error.get('Message')}"
+            )
+            response = {}
+        print(f'{response}')
+        return response
 
 
