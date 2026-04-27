@@ -168,3 +168,66 @@ class DynamoDBManager:
         return response
 
 
+    def query_db(self,table_name, **kwargs):
+
+        items = []
+        last_evaluated_key = None
+
+        try:
+            while True:
+                if last_evaluated_key:
+                    kwargs["ExclusiveStartKey"] = last_evaluated_key
+
+                response = self.dynamodb.query(
+                    TableName=table_name,
+                    **kwargs,
+                )
+                logging.info(f"Response {response}")
+                items.extend(response.get("Items", []))
+                logging.info(f"Response {response}")
+                last_evaluated_key = response.get("LastEvaluatedKey")
+                if not last_evaluated_key:
+                    break
+            
+
+            print(f"Total items retrieved: {len(items)}")
+            print(f'{response}') 
+            return items
+
+        except ClientError as e:
+            error = e.response.get("Error", {})
+            logging.error(f"Failed to query DynamoDB: {error.get('Message')}")
+            raise
+       
+    def update_item_db(self, table_name, key, **kwargs):
+        
+
+        response = self.dynamodb.update_item(
+            TableName=table_name, Key=key, ReturnValues="UPDATED_NEW", **kwargs
+        )
+
+        return response
+    
+    def delete_item_db(self, table_name, key):
+    
+       
+        response = self.dynamodb.delete_item(TableName=table_name, Key=key)
+        
+        
+        logging.info(f"response {response}")
+        print(f'{response}')
+
+    
+
+    def transact_write_items_db(self,transaction_items, **kwargs):
+    
+       
+        response = self.dynamodb.transact_write_items(TransactItems=transaction_items, **kwargs)
+       
+
+        return response
+
+    
+    
+    
+    
