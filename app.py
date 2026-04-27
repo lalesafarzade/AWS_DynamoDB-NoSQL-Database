@@ -35,6 +35,26 @@ def main():
     get_item.add_argument("table_name")
     get_item.add_argument("key")
 
+    quary_table= subparsers.add_parser("query-table")
+    quary_table.add_argument("table_name")
+    quary_table.add_argument("kwargs")
+
+    update_item= subparsers.add_parser("update-item")
+    update_item.add_argument("table_name")
+    update_item.add_argument("key")
+    update_item.add_argument("kwargs")
+
+    delete_item= subparsers.add_parser("delete-item")
+    delete_item.add_argument("table_name")
+    delete_item.add_argument("key")
+
+    transact_write = subparsers.add_parser("transact-write")
+    transact_write .add_argument("transaction_items")
+    transact_write .add_argument("kwargs")
+   
+
+
+
 
     args = parser.parse_args()
     dynamo_manager = DynamoDBManager()
@@ -60,6 +80,27 @@ def main():
     elif args.dynamo_command == "get-item":
         key_dict = json.loads(args.key)
         dynamo_manager.get_item_db(args.table_name,key_dict)
+
+    
+    elif args.dynamo_command == "query-table":
+        kwargs_dict = json.loads(args.kwargs)
+        dynamo_manager.query_db(args.table_name,**kwargs_dict)
+
+    elif args.dynamo_command == "update-item":
+        key_dict = json.loads(args.key)
+        kwargs_dict = json.loads(args.kwargs)
+        dynamo_manager.update_item_db(args.table_name,args.key_dict,**kwargs_dict)
+
+    elif args.dynamo_command == "delete-item":
+        key_dict = json.loads(args.key)
+        dynamo_manager.update_item_db(args.table_name,args.key_dict)
+
+    
+    elif args.dynamo_command == "transact-write":
+        transaction_items = json.loads(args.transaction_items)
+        kwargs_dict = json.loads(args.kwargs)
+
+        dynamo_manager.transact_write_items_db(transaction_items,**kwargs_dict)
 
 
 if __name__ == "__main__":
